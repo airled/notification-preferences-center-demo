@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "center",
+    "password": "password",
+    "database": "center_dev",
+    "host": "127.0.0.1",
+    "port": 5432,
+    "dialect": "postgres"
+  },
+  "test": {
+    "dialect": "sqlite",
+    "storage": "data/test.sqlite",
+    "logging": false
+  },
+  "production": {
+    "username": "center",
+    "password": "password",
+    "database": "center_prod",
+    "host": "postgres",
+    "port": 5432,
+    "dialect": "postgres"
+  }
+}
