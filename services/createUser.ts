@@ -1,17 +1,14 @@
 import sequelize from "@/config/sequelize";
 import { User, Source, DefaultSource, Trace } from "@/models";
 
-interface UserData {
+export interface UserData {
   regionId: number;
   email: string;
   startQuietHours: string;
   endQuietHours: string;
 }
 
-export async function createUser(formData: FormData) {
-  "use server";
-
-  const userData = Object.fromEntries(formData) as unknown as UserData;
+export async function createUser(userData: UserData): Promise<User> {
   const { regionId, email, startQuietHours, endQuietHours } = userData;
   const defaultSources = await DefaultSource.findAll();
 
@@ -52,6 +49,7 @@ export async function createUser(formData: FormData) {
     );
 
     await transaction.commit();
+    return user;
   } catch (error) {
     await transaction.rollback();
     throw error;

@@ -1,5 +1,3 @@
-"use server";
-
 import { Channel, NotificationType, Source, User } from "@/models";
 import deactivateSourceForUser from "./deactivateSourceForUser";
 import activateSourceForUser from "./activateSourceForUser";

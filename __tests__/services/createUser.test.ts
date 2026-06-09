@@ -50,12 +50,12 @@ describe("createUser", () => {
   it("creates new user", async () => {
     expect(await User.count()).toBe(0);
 
-    const formData = new FormData();
-    formData.set("regionId", String(region.id));
-    formData.set("email", "test@example.com");
-    formData.set("startQuietHours", "22:00");
-    formData.set("endQuietHours", "08:00");
-    await createUser(formData);
+    const regionId = region.id;
+    const email = "test@example.com";
+    const startQuietHours = "22:00";
+    const endQuietHours = "08:00";
+
+    await createUser({ regionId, email, startQuietHours, endQuietHours });
 
     const user = await User.findOne({
       where: { email: "test@example.com" },
@@ -69,12 +69,12 @@ describe("createUser", () => {
   it("creates default sources for new user", async () => {
     expect(await User.count()).toBe(0);
 
-    const formData = new FormData();
-    formData.set("regionId", String(region.id));
-    formData.set("email", "test@example.com");
-    formData.set("startQuietHours", "22:00");
-    formData.set("endQuietHours", "08:00");
-    await createUser(formData);
+    const regionId = region.id;
+    const email = "test@example.com";
+    const startQuietHours = "22:00";
+    const endQuietHours = "08:00";
+
+    await createUser({ regionId, email, startQuietHours, endQuietHours });
 
     const user = await User.findOne({
       where: { email: "test@example.com" },

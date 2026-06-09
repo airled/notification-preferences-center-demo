@@ -22,6 +22,7 @@
 ├── __tests__/              # Тесты (зеркалируют структуру app/ и services/)
 │   ├── app/                #   Интеграционные тесты страниц и API
 │   └── services/           #   Модульные тесты сервисов
+├── actions/                # Server Actions (обработчики форм и клиентских запросов)
 ├── app/                    # Next.js App Router (страницы и API)
 │   ├── api/                #   API-маршруты
 │   └── users/              #   Страницы пользователей
@@ -39,6 +40,14 @@
 └── jest.setup.ts           # Очистка БД после каждого теста
 ```
 
+## Server Actions (Actions)
+
+### `actions/createNewUser.ts` — createNewUser
+Server Action, вызываемый из формы создания пользователя. Принимает `FormData`, преобразует в `UserData`, делегирует создание сервису `services/createUser.ts`, после чего редиректит на страницу созданного пользователя.
+
+### `actions/toggleUserSourceCheckbox.ts` — toggleUserSourceCheckbox
+Server Action, вызываемый из клиентского компонента `sourceTable.tsx` при клике на чекбокс. Принимает `userId`, `channelId`, `notificationTypeId`, делегирует переключение источника сервису `services/toggleSource.ts`, возвращает `{ status: "ok" }`.
+
 ## Страницы (Pages)
 
 ### `/` — Главная
@@ -48,13 +57,13 @@
 Выводит всех пользователей с регионом и часовым поясом. Каждый элемент — ссылка на страницу пользователя.
 
 ### `/users/create` — Создание пользователя
-Форма с полями: email, регион, начало/конец тихих часов. При отправке:
-- создаётся пользователь в выбранном регионе;
-- создаются source-записи по умолчанию (из `default_sources`);
+Форма с полями: email, регион, начало/конец тихих часов. При отправке вызывает Server Action `createNewUser`, который:
+- создаёт пользователя в выбранном регионе;
+- создаёт source-записи по умолчанию (из `default_sources`);
 - все операции — в одной транзакции.
 
 ### `/users/[id]` — Детальная страница пользователя
-Отображает email, регион, тихие часы и таблицу `channel × notificationType` с чекбоксами. Чекбокс включает/отключает источник уведомлений для данной пары.
+Отображает email, регион, тихие часы и таблицу `channel × notificationType` с чекбоксами. Чекбокс через клиентский компонент `SourceTable` вызывает Server Action `toggleUserSourceCheckbox`, который включает/отключает источник уведомлений для данной пары.
 
 ## API-маршруты (API Routes)
 
@@ -224,10 +233,10 @@ erDiagram
 Каждый вызов `check()` логируется в `Trace`.
 
 ### `services/createUser.ts` — createUser
-Server Action (Next.js Server Action). Создаёт пользователя в транзакции, затем создаёт source-записи для всех `DefaultSource`. Логирует шаги в `Trace`.
+Создаёт пользователя в транзакции, затем создаёт source-записи для всех `DefaultSource`. Логирует шаги в `Trace`. Вызывается из `actions/createNewUser.ts`.
 
 ### `services/toggleSource.ts` — toggleSource
-Server Action. Переключает состояние источника: если запись есть — удаляет, если нет — создаёт. Используется на клиенте при клике на чекбокс в таблице.
+Переключает состояние источника: если запись есть — удаляет, если нет — создаёт. Вызывается из `actions/toggleUserSourceCheckbox.ts`.
 
 ### `services/activateSourceForUser.ts` — activateSourceForUser
 Создаёт запись `Source` для пользователя (findOrCreate), логирует в `Trace`. Транзакционна.

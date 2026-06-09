@@ -1,22 +1,19 @@
 "use client";
 
+import { toggleUserSourceCheckbox } from "@/actions/toggleUserSourceCheckbox";
 import { buildSourceKey } from "@/helpers/buildSourceKey";
-import { toggleSource } from "@/services/toggleSource";
 import { useRouter } from "next/navigation";
 
-interface PolicyData {
-  regionId: number;
-  channelId: number;
-  notificationTypeId: number;
-}
 interface ChannelData {
   id: number;
   name: string;
 }
+
 interface NotificationTypeData {
   id: number;
   name: string;
 }
+
 interface UserSourcesData {
   channelId: number;
   notificationTypeId: number;
@@ -45,7 +42,7 @@ export default function SourceTable({
     channelId: number,
     notificationTypeId: number,
   ) {
-    await toggleSource(userId, channelId, notificationTypeId);
+    await toggleUserSourceCheckbox(userId, channelId, notificationTypeId);
     router.refresh();
     return null;
   }

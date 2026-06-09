@@ -1,8 +1,8 @@
+import { createNewUser } from "@/actions/createNewUser";
 import { Region } from "@/models";
-import { createUser } from "@/services/createUser";
 import Link from "next/link";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default async function CreateUser() {
   const regions = await Region.findAll();
@@ -10,7 +10,7 @@ export default async function CreateUser() {
 
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans gap-2">
-      <form action={createUser} className="grid grid-cols-1 gap-2">
+      <form action={createNewUser} className="grid grid-cols-1 gap-2">
         <select className="border border-black p-2" name="startQuietHours">
           {hours.map(hour => {
             return (
